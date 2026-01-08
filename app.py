@@ -10,17 +10,17 @@ st.set_page_config(page_title="말씀 한 스푼", layout="centered")
 st.sidebar.title("⚙️ 설정")
 font_size = st.sidebar.slider("글자 크기 조절", 18, 40, 22, 2, key="font_slider")
 
-# 3. Custom CSS for Fixed Header, Vertical Watermark, and Button Fix
+# 3. Custom CSS for Layout, Watermark, and UI Fixes
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&family=Nanum+Myeongjo:wght@700;900&display=swap');
     
-    /* HIDE DEFAULT UI */
+    /* HIDE DEFAULT STREAMLIT UI */
     #MainMenu {{visibility: hidden;}}
     footer {{visibility: hidden;}}
     [data-testid="stHeader"] {{ background: rgba(0,0,0,0) !important; }}
 
-    /* FIXED TOP TITLE bar */
+    /* FIXED TOP TITLE BAR */
     .fixed-header {{
         position: fixed;
         top: 0;
@@ -28,7 +28,7 @@ st.markdown(f"""
         width: 100%;
         background-color: #F4ECD8;
         text-align: center;
-        padding: 15px 0;
+        padding: 18px 0;
         font-size: 26px;
         font-weight: bold;
         color: #8B7355;
@@ -40,21 +40,21 @@ st.markdown(f"""
     /* VERTICAL WATERMARK - Large on the right side */
     .vertical-watermark {{
         position: fixed;
-        right: 30px;
-        top: 100px;
-        height: 80%;
+        right: 40px;
+        top: 120px;
+        height: 75%;
         writing-mode: vertical-rl;
         text-orientation: upright;
-        font-size: 70px;
+        font-size: 75px;
         font-family: 'Nanum Myeongjo', serif;
         font-weight: 900;
         color: #1A1A1A;
-        opacity: 0.04; /* Very faint */
+        opacity: 0.03; /* Extremely subtle */
         z-index: -1;
         letter-spacing: 25px;
     }}
 
-    /* SIDEBAR TOGGLE BUTTON - Removing the 'keyboard_double_arrow' text */
+    /* SIDEBAR TOGGLE BUTTON FIX - Removes 'keyboard_double_arrow' text */
     [data-testid="stSidebarCollapsedControl"] {{
         background-color: #E8DFCA !important;
         border-radius: 50% !important;
@@ -67,18 +67,16 @@ st.markdown(f"""
         align-items: center !important;
         justify-content: center !important;
     }}
-    /* Hide the broken text inside the button */
     [data-testid="stSidebarCollapsedControl"] span {{
         display: none !important;
     }}
-    /* Add a clean brown arrow icon using CSS */
     [data-testid="stSidebarCollapsedControl"]::after {{
         content: "▶";
         color: #8B7355;
         font-size: 18px;
     }}
 
-    /* THEME & TEXT */
+    /* OVERALL THEME */
     .stApp {{ background-color: #F4ECD8 !important; }}
     [data-testid="stSidebar"] {{ background-color: #E8DFCA !important; }}
 
@@ -90,7 +88,7 @@ st.markdown(f"""
     .stMarkdown p, .stInfo, .prayer-box {{ font-size: {font_size}px !important; line-height: 1.8; }}
     h1, h2, h3 {{ font-size: {font_size + 8}px !important; font-weight: 700; }}
 
-    /* COMPONENTS */
+    /* CONTENT COMPONENTS */
     .stInfo {{ background-color: #E8E2D2 !important; border: 1px solid #D1C7B1 !important; color: #1A1A1A !important; }}
     .prayer-box {{
         background-color: #EFE6CF !important;
@@ -101,6 +99,7 @@ st.markdown(f"""
         margin-bottom: 20px !important;
     }}
 
+    /* PERFECTED FOOTER */
     .custom-footer {{
         margin-top: 80px;
         padding: 40px 0 80px 0;
@@ -108,14 +107,14 @@ st.markdown(f"""
         font-size: 18px;
         color: #555555;
         border-top: 1px solid #D1C7B1;
-        line-height: 2.0 !important;
+        line-height: 2.2 !important;
     }}
     
-    .main-content-padding {{ padding-top: 80px; }}
+    .content-spacer {{ padding-top: 90px; }}
     </style>
     """, unsafe_allow_html=True)
 
-# 4. Elements (Header & Watermark)
+# 4. Elements (Top Header & Right Watermark)
 st.markdown('<div class="fixed-header">말씀 한 스푼</div>', unsafe_allow_html=True)
 st.markdown('<div class="vertical-watermark">말씀 한 스푼</div>', unsafe_allow_html=True)
 
@@ -128,7 +127,7 @@ if 'visited' not in st.session_state:
 # 6. Load Data
 @st.cache_data
 def load_data():
-    file_name = 'devotionalsabsolute.csv' # Using the corrected spelling
+    file_name = 'devotionalsabsolute.csv' 
     if os.path.exists(file_name):
         return pd.read_csv(file_name)
     else:
@@ -138,11 +137,11 @@ def load_data():
 df = load_data()
 
 if df is not None:
-    st.markdown('<div class="main-content-padding"></div>', unsafe_allow_html=True)
+    # Spacer to prevent header from covering the date
+    st.markdown('<div class="content-spacer"></div>', unsafe_allow_html=True)
     
     date_list = df['Date'].unique().tolist()
     
-    # Corrected Session State Logic
     if 'current_date' not in st.session_state:
         st.session_state.current_date = date_list[0]
 
@@ -171,7 +170,7 @@ if df is not None:
     st.markdown("### 🙏 함께하는 기도")
     st.markdown(f'<div class="prayer-box">{row["Prayer"]}</div>', unsafe_allow_html=True)
     
-    # 7. Perfected Footer
+    # 7. Final Footer
     st.markdown("""
         <div class="custom-footer">
             한국중앙교회<br>
