@@ -79,7 +79,7 @@ if 'visited' not in st.session_state:
 # 5. Load Data
 @st.cache_data
 def load_data():
-    file_name = 'devotional_clean.csv'
+    file_name = 'devotionalsabsolute.csv'
     if os.path.exists(file_name):
         return pd.read_csv(file_name)
     else:
