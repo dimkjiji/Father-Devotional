@@ -10,18 +10,30 @@ st.set_page_config(page_title="말씀 한 스푼", layout="centered")
 st.sidebar.title("⚙️ 설정")
 font_size = st.sidebar.slider("글자 크기 조절", 18, 40, 22, 2, key="font_slider")
 
-# 3. Enhanced Styling: Sepia, Watermark, and Clean UI
+# 3. Enhanced Styling: Sidebar Toggle, Watermark, and Footer
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&display=swap');
     
-    /* HIDE STREAMLIT UI ELEMENTS */
+    /* HIDE ONLY SPECIFIC UI ELEMENTS */
     #MainMenu {{visibility: hidden;}}
     footer {{visibility: hidden;}}
-    header {{visibility: hidden;}}
+    
+    /* Ensure the Header is transparent but the Sidebar Toggle is visible */
+    [data-testid="stHeader"] {{
+        background-color: rgba(0,0,0,0) !important;
+    }}
+    
+    /* Force the Sidebar Open button to be visible and black */
+    [data-testid="stSidebarCollapsedControl"] {{
+        color: #1A1A1A !important;
+        background-color: #E8DFCA !important;
+        border-radius: 8px;
+        top: 10px;
+    }}
 
     /* Force Locked Sepia Theme */
-    .stApp, [data-testid="stAppViewContainer"], .main {{
+    .stApp, [data-testid="stAppViewContainer"] {{
         background-color: #F4ECD8 !important;
     }}
 
@@ -48,25 +60,28 @@ st.markdown(f"""
     /* WATERMARK STYLE */
     .watermark {{
         position: fixed;
-        bottom: 100px;
-        right: 20px;
-        opacity: 0.1;
-        font-size: 50px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(-30deg);
+        opacity: 0.05;
+        font-size: 80px;
         font-weight: bold;
         color: #1A1A1A;
-        z-index: -1;
+        z-index: 0;
         pointer-events: none;
-        user-select: none;
+        white-space: nowrap;
     }}
 
     /* FOOTER STYLE */
     .custom-footer {{
-        margin-top: 50px;
+        margin-top: 80px;
+        padding-top: 30px;
+        padding-bottom: 60px;
         text-align: center;
-        font-size: 16px;
+        font-size: 18px;
         color: #555555;
         border-top: 1px solid #D1C7B1;
-        padding-top: 20px;
+        width: 100%;
     }}
 
     /* UI Components */
@@ -96,10 +111,11 @@ if 'visited' not in st.session_state:
         f.write(f"Visit at: {datetime.now()}\n")
     st.session_state.visited = True
 
-# 5. Load Data (Updated to dovotionalsabsolute.csv)
+# 5. Load Data - CHECK THIS FILENAME CAREFULLY
 @st.cache_data
 def load_data():
-    file_name = 'dovotionalsabsolute.csv'
+    # Ensure this matches your file on GitHub EXACTLY
+    file_name = 'devotionalsabsolute.csv' 
     if os.path.exists(file_name):
         return pd.read_csv(file_name)
     else:
