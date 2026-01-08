@@ -6,37 +6,38 @@ from datetime import datetime
 # 1. Page Configuration
 st.set_page_config(page_title="아버지의 말씀", layout="centered")
 
-# 2. Sidebar Settings
+# 2. Sidebar Settings (Font Size Control)
 st.sidebar.title("⚙️ 설정")
 font_size = st.sidebar.slider("글자 크기 조절", 18, 40, 22, 2, key="font_slider")
 
-# 3. Clean Sepia Styling with Hidden Menus
+# 3. Final Styling: Locked Sepia & Hidden Menus
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&display=swap');
     
-    /* HIDE STREAMLIT UI ELEMENTS */
+    /* Hide Streamlit UI elements for a clean 'App' feel */
     #MainMenu {{visibility: hidden;}}
     footer {{visibility: hidden;}}
     header {{visibility: hidden;}}
 
-    /* Force Locked Sepia Theme */
+    /* Force Locked Sepia Background */
     .stApp, [data-testid="stAppViewContainer"], .main {{
         background-color: #F4ECD8 !important;
     }}
 
-    [data-testid="stSidebar"] {{
+    [data-testid="stSidebar"], [data-testid="stSidebarNav"] {{
         background-color: #E8DFCA !important;
     }}
 
-    /* Global Text Styling */
+    /* Global Text Styling (Black on Sepia) */
     html, body, [class*="css"], .stMarkdown, p, h1, h2, h3, span, label, li {{
         font-family: 'Nanum Gothic', sans-serif !important;
         color: #1A1A1A !important;
         line-height: 1.8 !important;
     }}
 
-    .stMarkdown p, .stInfo, .prayer-box, .stTextArea textarea {{
+    /* Dynamic Font Sizing based on Slider */
+    .stMarkdown p, .stInfo, .prayer-box {{
         font-size: {font_size}px !important;
     }}
 
@@ -45,13 +46,14 @@ st.markdown(f"""
         font-weight: 700 !important;
     }}
 
-    /* UI Components */
+    /* Verse Box Style */
     .stInfo {{
         background-color: #E8E2D2 !important;
         border: 1px solid #D1C7B1 !important;
         color: #1A1A1A !important;
     }}
 
+    /* Prayer Box Style */
     .prayer-box {{
         background-color: #EFE6CF !important;
         border-left: 6px solid #A68B67 !important;
@@ -61,15 +63,10 @@ st.markdown(f"""
         color: #1A1A1A !important;
         margin-bottom: 20px !important;
     }}
-
-    .stTextArea textarea {{
-        background-color: #FFFFFF !important;
-        color: #1A1A1A !important;
-    }}
     </style>
     """, unsafe_allow_html=True)
 
-# 4. Visitor Logger
+# 4. Visitor Logger (Records only the time of visit)
 if 'visited' not in st.session_state:
     with open("visitor_log.txt", "a", encoding='utf-8') as f:
         f.write(f"Visit at: {datetime.now()}\n")
@@ -95,29 +92,30 @@ if df is not None:
 
     st.sidebar.divider()
     st.sidebar.title("📖 목차")
+    
     def on_change():
         st.session_state.current_date = st.session_state.date_selector
 
-    selected_date = st.sidebar.selectbox("날짜 선택:", date_list, 
+    selected_date = st.sidebar.selectbox(
+        "날짜 선택:", 
+        date_list, 
         index=date_list.index(st.session_state.current_date),
-        key="date_selector", on_change=on_change)
+        key="date_selector", 
+        on_change=on_change
+    )
 
     row = df[df['Date'] == st.session_state.current_date].iloc[0]
 
-    # --- Main Display ---
+    # --- Display Content ---
     st.title(f"📅 {row['Date']}")
+    
     st.markdown("### 📖 성경구절")
     st.info(row['Verse'])
+    
     st.markdown("### 🖋️ 말씀 한 스푼")
     st.write(row['Devotional'])
+    
     st.markdown("### 🙏 함께하는 기도")
     st.markdown(f'<div class="prayer-box">{row["Prayer"]}</div>', unsafe_allow_html=True)
-
-    st.divider()
-    st.subheader("📝 나의 묵상")
-    user_note = st.text_area("주님이 주신 생각들...", key=f"text_{st.session_state.current_date}", height=150)
     
-    if st.button("묵상 저장하기"):
-        with open("reflections.txt", "a", encoding='utf-8') as f:
-            f.write(f"\n[{st.session_state.current_date}]\n{user_note}\n{'-'*20}")
-        st.toast("묵상이 저장되었습니다!")
+    st.write("\n") # Padding at the bottom
