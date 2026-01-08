@@ -10,79 +10,81 @@ st.set_page_config(page_title="말씀 한 스푼", layout="centered")
 st.sidebar.title("⚙️ 설정")
 font_size = st.sidebar.slider("글자 크기 조절", 18, 40, 22, 2, key="font_slider")
 
-# 3. THE FINAL CSS FIX: Custom Sidebar Button & Vertical Watermark
+# 3. THE DEFINITIVE CSS: Restoring Sidebar Button & Fixing UI
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&family=Nanum+Myeongjo:wght@700;900&display=swap');
     
-    /* 1. COMPLETELY HIDE THE BROKEN BUTTON AND HEADER */
-    [data-testid="stHeader"] {{ visibility: hidden !important; }}
+    /* 1. MAKE HEADER INVISIBLE BUT FUNCTIONAL */
+    [data-testid="stHeader"] {{
+        background-color: rgba(0,0,0,0) !important; /* Fully transparent */
+    }}
+    
+    /* Hide the default Streamlit menu and footer */
     #MainMenu {{ visibility: hidden !important; }}
     footer {{ visibility: hidden !important; }}
 
-    /* 2. CREATE A NEW CUSTOM SIDEBAR TOGGLE */
-    /* This targets the button container and forces it to look like a clean circle */
+    /* 2. CUSTOM SIDEBAR TOGGLE BUTTON */
+    /* We make the button container visible and style it */
     [data-testid="stSidebarCollapsedControl"] {{
-        visibility: visible !important;
         background-color: #8B7355 !important;
         border-radius: 50% !important;
-        width: 50px !important;
-        height: 50px !important;
+        width: 45px !important;
+        height: 45px !important;
         position: fixed !important;
-        top: 20px !important;
-        left: 20px !important;
+        top: 15px !important;
+        left: 15px !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
         z-index: 10000 !important;
-        color: white !important;
     }}
     
-    /* Hide the 'keyboard_double_arrow' text inside the button */
+    /* Force hide the 'keyboard...' text */
     [data-testid="stSidebarCollapsedControl"] span {{
         display: none !important;
     }}
 
-    /* Put a clean white arrow in the button */
+    /* Put a clean White Triangle in the button */
     [data-testid="stSidebarCollapsedControl"]::after {{
         content: "▶" !important;
-        font-size: 20px !important;
+        font-size: 16px !important;
         color: white !important;
-        visibility: visible !important;
+        margin-left: 3px;
     }}
 
     /* 3. VERTICAL WATERMARK (Locked to Right) */
     .vertical-watermark {{
         position: fixed;
-        right: 20px;
-        top: 100px;
-        height: 80vh;
+        right: 25px;
+        top: 15%;
+        height: 70%;
         writing-mode: vertical-rl;
         text-orientation: upright;
-        font-size: 60px;
+        font-size: 65px;
         font-family: 'Nanum Myeongjo', serif;
         font-weight: 900;
         color: #1A1A1A;
-        opacity: 0.05 !important; /* Made slightly more visible for testing */
+        opacity: 0.05 !important;
         z-index: -1;
         letter-spacing: 20px;
         pointer-events: none;
     }}
 
-    /* 4. FIXED TOP TITLE */
+    /* 4. APP TITLE BAR */
     .app-title-bar {{
         text-align: center;
         padding: 15px;
         background-color: #E8DFCA;
         border-radius: 10px;
-        margin-bottom: 40px;
+        margin-bottom: 35px;
         font-family: 'Nanum Myeongjo', serif;
         font-size: 28px;
         color: #8B7355;
         font-weight: bold;
     }}
 
-    /* 5. GENERAL THEME */
+    /* 5. THEME */
     .stApp {{ background-color: #F4ECD8 !important; }}
     [data-testid="stSidebar"] {{ background-color: #E8DFCA !important; }}
     
@@ -91,30 +93,31 @@ st.markdown(f"""
         color: #1A1A1A !important;
     }}
 
-    .stMarkdown p, .stInfo, .prayer-box {{ font-size: {font_size}px !important; line-height: 1.9 !important; }}
+    .stMarkdown p, .stInfo, .prayer-box {{ font-size: {font_size}px !important; line-height: 1.8; }}
     h1, h2, h3 {{ font-size: {font_size + 8}px !important; font-weight: 700; }}
 
     .stInfo {{ background-color: #E8E2D2 !important; border: 1px solid #D1C7B1 !important; }}
     .prayer-box {{
         background-color: #EFE6CF;
         border-left: 6px solid #A68B67;
-        padding: 25px;
+        padding: 22px;
         border-radius: 8px;
         font-style: italic;
     }}
     
     .custom-footer {{
-        margin-top: 80px;
+        margin-top: 70px;
         padding: 40px 0;
         text-align: center;
         font-size: 18px;
         color: #555555;
         border-top: 1px solid #D1C7B1;
+        line-height: 2.2 !important;
     }}
     </style>
     """, unsafe_allow_html=True)
 
-# 4. Elements
+# 4. Visible Elements
 st.markdown('<div class="vertical-watermark">말씀 한 스푼</div>', unsafe_allow_html=True)
 st.markdown('<div class="app-title-bar">말씀 한 스푼</div>', unsafe_allow_html=True)
 
@@ -156,4 +159,10 @@ if df is not None:
     st.markdown("### 🙏 함께하는 기도")
     st.markdown(f'<div class="prayer-box">{row["Prayer"]}</div>', unsafe_allow_html=True)
     
-    st.markdown(f'<div class="custom-footer">한국중앙교회<br>하 나 인 출판</div>', unsafe_allow_html=True)
+    # 6. Footer
+    st.markdown("""
+        <div class="custom-footer">
+            한국중앙교회<br>
+            하 나 인 출판
+        </div>
+    """, unsafe_allow_html=True)
