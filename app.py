@@ -10,31 +10,32 @@ st.set_page_config(page_title="아버지의 말씀", layout="centered")
 st.sidebar.title("⚙️ 설정")
 font_size = st.sidebar.slider("글자 크기 조절", 18, 40, 22, 2, key="font_slider")
 
-# 3. THE FIX: Locked Sepia Styling
-# This code overrides both Light and Dark modes to keep the background Sepia
+# 3. Clean Sepia Styling with Hidden Menus
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&display=swap');
     
-    /* Force Background Color for everything */
+    /* HIDE STREAMLIT UI ELEMENTS */
+    #MainMenu {{visibility: hidden;}}
+    footer {{visibility: hidden;}}
+    header {{visibility: hidden;}}
+
+    /* Force Locked Sepia Theme */
     .stApp, [data-testid="stAppViewContainer"], .main {{
         background-color: #F4ECD8 !important;
-        color: #1A1A1A !important;
     }}
 
-    /* Force Sidebar Color */
-    [data-testid="stSidebar"], [data-testid="stSidebarNav"] {{
+    [data-testid="stSidebar"] {{
         background-color: #E8DFCA !important;
     }}
 
-    /* Global Font and Text Color (Locked to Black/Dark Charcoal) */
+    /* Global Text Styling */
     html, body, [class*="css"], .stMarkdown, p, h1, h2, h3, span, label, li {{
         font-family: 'Nanum Gothic', sans-serif !important;
         color: #1A1A1A !important;
         line-height: 1.8 !important;
     }}
 
-    /* Dynamic Font Size */
     .stMarkdown p, .stInfo, .prayer-box, .stTextArea textarea {{
         font-size: {font_size}px !important;
     }}
@@ -44,14 +45,13 @@ st.markdown(f"""
         font-weight: 700 !important;
     }}
 
-    /* Verse Box Style (Muted Tan) */
+    /* UI Components */
     .stInfo {{
         background-color: #E8E2D2 !important;
         border: 1px solid #D1C7B1 !important;
         color: #1A1A1A !important;
     }}
 
-    /* Prayer Box Style (Warm Gold/Sepia) */
     .prayer-box {{
         background-color: #EFE6CF !important;
         border-left: 6px solid #A68B67 !important;
@@ -62,7 +62,6 @@ st.markdown(f"""
         margin-bottom: 20px !important;
     }}
 
-    /* Fix for the Text Input area to make it visible against sepia */
     .stTextArea textarea {{
         background-color: #FFFFFF !important;
         color: #1A1A1A !important;
@@ -79,7 +78,7 @@ if 'visited' not in st.session_state:
 # 5. Load Data
 @st.cache_data
 def load_data():
-    file_name = 'devotionalsabsolute.csv'
+    file_name = 'devotional_clean.csv'
     if os.path.exists(file_name):
         return pd.read_csv(file_name)
     else:
@@ -105,7 +104,7 @@ if df is not None:
 
     row = df[df['Date'] == st.session_state.current_date].iloc[0]
 
-    # --- Display ---
+    # --- Main Display ---
     st.title(f"📅 {row['Date']}")
     st.markdown("### 📖 성경구절")
     st.info(row['Verse'])
