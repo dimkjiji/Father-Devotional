@@ -8,61 +8,75 @@ st.set_page_config(page_title="아버지의 말씀", layout="centered")
 
 # 2. Sidebar Settings
 st.sidebar.title("⚙️ 설정")
-font_size = st.sidebar.slider("글자 크기 조절", 18, 36, 22, 2, key="font_slider")
+font_size = st.sidebar.slider("글자 크기 조절", 18, 40, 22, 2, key="font_slider")
 
-# 3. Sepia Styling Section
+# 3. THE FIX: Locked Sepia Styling
+# This code overrides both Light and Dark modes to keep the background Sepia
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&display=swap');
     
-    /* Force Sepia Background for the whole app */
-    .stApp {{
+    /* Force Background Color for everything */
+    .stApp, [data-testid="stAppViewContainer"], .main {{
         background-color: #F4ECD8 !important;
-        font-family: 'Nanum Gothic', sans-serif !important;
+        color: #1A1A1A !important;
     }}
 
-    /* Sidebar - slightly darker sepia for contrast */
-    [data-testid="stSidebar"] {{
+    /* Force Sidebar Color */
+    [data-testid="stSidebar"], [data-testid="stSidebarNav"] {{
         background-color: #E8DFCA !important;
     }}
 
-    /* Text Colors - Pure Black for high legibility */
-    .stMarkdown p, .stInfo, .prayer-box, h1, h2, h3, span, label {{
+    /* Global Font and Text Color (Locked to Black/Dark Charcoal) */
+    html, body, [class*="css"], .stMarkdown, p, h1, h2, h3, span, label, li {{
+        font-family: 'Nanum Gothic', sans-serif !important;
         color: #1A1A1A !important;
-        line-height: 1.8;
+        line-height: 1.8 !important;
     }}
 
-    .stMarkdown p, .stInfo, .prayer-box {{
+    /* Dynamic Font Size */
+    .stMarkdown p, .stInfo, .prayer-box, .stTextArea textarea {{
         font-size: {font_size}px !important;
     }}
 
     h1, h2, h3 {{
         font-size: {font_size + 8}px !important;
+        font-weight: 700 !important;
     }}
 
-    /* Muted Info Box (Bible Verse) */
+    /* Verse Box Style (Muted Tan) */
     .stInfo {{
         background-color: #E8E2D2 !important;
         border: 1px solid #D1C7B1 !important;
+        color: #1A1A1A !important;
     }}
 
-    /* Custom Prayer Box (Deep Sepia/Gold) */
+    /* Prayer Box Style (Warm Gold/Sepia) */
     .prayer-box {{
-        background-color: #EFE6CF;
-        border-left: 5px solid #A68B67;
-        padding: 20px;
-        border-radius: 5px;
-        font-style: italic;
+        background-color: #EFE6CF !important;
+        border-left: 6px solid #A68B67 !important;
+        padding: 20px !important;
+        border-radius: 5px !important;
+        font-style: italic !important;
+        color: #1A1A1A !important;
+        margin-bottom: 20px !important;
+    }}
+
+    /* Fix for the Text Input area to make it visible against sepia */
+    .stTextArea textarea {{
+        background-color: #FFFFFF !important;
+        color: #1A1A1A !important;
     }}
     </style>
     """, unsafe_allow_html=True)
 
-# 4. Visitor Logger & Data Loading (Same as before)
+# 4. Visitor Logger
 if 'visited' not in st.session_state:
     with open("visitor_log.txt", "a", encoding='utf-8') as f:
         f.write(f"Visit at: {datetime.now()}\n")
     st.session_state.visited = True
 
+# 5. Load Data
 @st.cache_data
 def load_data():
     file_name = 'devotional_clean.csv'
