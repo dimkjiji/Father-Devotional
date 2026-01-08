@@ -110,7 +110,7 @@ st.markdown('<div class="vertical-watermark">말씀 한 스푼</div>', unsafe_al
 # 5. Load Data
 @st.cache_data
 def load_data():
-    file_name = 'dovotionalsabsolute.csv' # Kept your 'o' spelling
+    file_name = 'devotionalsabsolute.csv' # Kept your 'o' spelling
     if os.path.exists(file_name):
         return pd.read_csv(file_name)
     else:
